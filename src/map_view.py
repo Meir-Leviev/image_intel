@@ -19,6 +19,21 @@ import folium
 def sort_by_time(arr):
     pass
 
+def get_color_marker(data: list[dict]) -> dict:
+    available_colors = [
+        'blue', 'green', 'red', 'purple', 'orange', 'darkred',
+        'lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue',
+        'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen'
+    ]
+    color_for_model = {}
+    index = 0
+    for img in data:
+        if img.get("has_gps"):
+            model = img.get("camera_model")
+            if model not in color_for_model:
+                color_for_model[model] = available_colors[index % len(available_colors)]
+                index += 1
+    return color_for_model
 
 def create_map(images_data):
     """
