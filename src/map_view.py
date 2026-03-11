@@ -20,6 +20,14 @@ def sort_by_time(arr):
     pass
 
 def get_color_marker(data: list[dict]) -> dict:
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     available_colors = [
         'blue', 'green', 'red', 'purple', 'orange', 'darkred',
         'lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue',
@@ -45,7 +53,17 @@ def create_map(images_data):
     Returns:
         string של HTML (המפה)
     """
-    pass
+    m = folium.Map(location=[32.0833, 34.8333], zoom_start=8)
+
+    dict_for_color = get_color_marker(images_data)
+    for d in images_data:
+        if d["has_gps"]:
+            info = f"{d.get("filename")}<br>{d.get("datetime")}<br>{d.get("camera_model")}"
+            folium.Marker(location=[d["latitude"], d["longitude"]],
+                          popup=info,
+                          icon=folium.Icon(color=dict_for_color[d["camera_model"]])
+                          ).add_to(m)
+    return m._repr_html_()
 
 
 
