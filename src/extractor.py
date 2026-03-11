@@ -131,4 +131,10 @@ def extract_all(folder_path):
     Returns:
         list של dicts (כמו extract_metadata)
     """
-    pass
+    jpg_list=[]
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith(".jpg"):
+            full_path = os.path.join(folder_path, filename)
+            metadata = extract_metadata(full_path)
+            jpg_list.append(metadata)
+    return jpg_list
