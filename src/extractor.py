@@ -17,7 +17,20 @@ def has_gps(data: dict):
 
 
 def latitude(data: dict):
-    pass
+    gps = data.get("GPSInfo")[2]
+    ref = data.get("GPSInfo")[1]
+
+    if not gps:
+        return None
+
+    degrees = gps[0]
+    minutes = gps[1] / 60.0
+    seconds = gps[2] / 3600.0
+
+    decimal = degrees + minutes + seconds
+    if ref != "N":
+        decimal = -decimal
+    return round(decimal, 6)
 
 
 def longitude(data: dict):
