@@ -17,10 +17,15 @@ def has_gps(data: dict):
 
 
 def latitude(data: dict):
-    gps = data.get("GPSInfo")[2]
-    ref = data.get("GPSInfo")[1]
+    gps_data = data.get("GPSInfo")
+    # check if "GPSInfo" is a dict and not a number
+    if not gps_data or not isinstance(gps_data, dict):
+        return None
 
-    if not gps:
+    gps = gps_data.get(2)
+    ref = gps_data.get(1)
+
+    if not gps or len(gps) < 3:
         return None
 
     degrees = gps[0]
@@ -34,10 +39,14 @@ def latitude(data: dict):
 
 
 def longitude(data: dict):
-    gps = data.get("GPSInfo")[4]
-    ref = data.get("GPSInfo")[3]
+    gps_data = data.get("GPSInfo")
+    # check if "GPSInfo" is a dict and not a number
+    if not gps_data or not isinstance(gps_data, dict):
+        return None
+    gps = gps_data.get(4)
+    ref = gps_data.get(3)
 
-    if not gps:
+    if not gps or len(gps) < 3:
         return None
 
     degrees = gps[0]
@@ -104,10 +113,9 @@ def extract_metadata(image_path):
 
     # תיקון: הוסר print(data) שהיה כאן - הדפיס את כל ה-EXIF הגולמי על כל תמונה
 
-    inner_exif = exif.get_ifd(0x8769)
-    for tag_id, value in inner_exif.items():
-        tag = TAGS.get(tag_id, tag_id)
-        data[tag] = value
+    gps_ifd = exif.get_ifd(0x8825)
+    if gps_ifd:
+        data["GPSInfo"] = dict(gps_ifd)
 
     exif_dict = {
         "filename": path.name,
