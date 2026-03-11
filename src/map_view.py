@@ -17,8 +17,31 @@ import folium
 
 
 def sort_by_time(arr):
-    pass
+    return sorted(arr, key=lambda x: x.get("datetime", ""))
 
+def get_color_marker(data: list[dict]) -> dict:
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
+    available_colors = [
+        'blue', 'green', 'red', 'purple', 'orange', 'darkred',
+        'lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue',
+        'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen'
+    ]
+    color_for_model = {}
+    index = 0
+    for img in data:
+        if img.get("has_gps"):
+            model = img.get("camera_model")
+            if model not in color_for_model:
+                color_for_model[model] = available_colors[index % len(available_colors)]
+                index += 1
+    return color_for_model
 
 def create_map(images_data):
     """
@@ -30,7 +53,55 @@ def create_map(images_data):
     Returns:
         string של HTML (המפה)
     """
-    pass
+    sorted_data = sort_by_time(images_data)
+
+    m = folium.Map(location=[32.0833, 34.8333], zoom_start=8)
+
+    dict_for_color = get_color_marker(sorted_data)
+
+    coordinates_for_line = []
+
+    for i, d in enumerate(sorted_data):
+        if d["has_gps"]:
+            lat_lng = [d["latitude"], d["longitude"]]
+            coordinates_for_line.append(lat_lng)
+
+            html_content = f"""
+                        <div style="font-family: Arial, sans-serif; font-size: 14px; min-width: 200px;">
+                            <h4 style="margin-top: 0;">&#128247; {d.get("filename")}</h4>
+                            <b>Photo #:</b> {i + 1}<br>
+                            <b>Time:</b> {d.get("datetime")}<br>
+                            <b>Device:</b> {d.get("camera_make")} {d.get("camera_model")}<br>
+                            <b>Coordinates:</b><br>
+                            {d.get("latitude"):.6f}, {d.get("longitude"):.6f}
+                        </div>
+                        """
+
+            # For a larger box
+            popup_obj = folium.Popup(html_content, max_width=300)
+
+            # Camera icon
+            custom_icon = folium.Icon(
+                color=dict_for_color[d["camera_model"]],
+                icon="camera",
+                prefix="fa"
+            )
+
+            folium.Marker(location=lat_lng,
+                          popup=popup_obj,
+                          icon=custom_icon,
+                          tooltip=f"{d["camera_model"]} - {d["datetime"]}"
+                          ).add_to(m)
+
+    if len(coordinates_for_line) > 1:
+        folium.PolyLine(
+            locations=coordinates_for_line,
+            color="blue",
+            weight=3,
+            opacity=0.7,
+        ).add_to(m)
+
+    return m._repr_html_()
 
 
 
