@@ -34,7 +34,20 @@ def latitude(data: dict):
 
 
 def longitude(data: dict):
-    pass
+    gps = data.get("GPSInfo")[4]
+    ref = data.get("GPSInfo")[3]
+
+    if not gps:
+        return None
+
+    degrees = gps[0]
+    minutes = gps[1] / 60.0
+    seconds = gps[2] / 3600.0
+
+    decimal = degrees + minutes + seconds
+    if ref != "E":
+        decimal = -decimal
+    return round(decimal, 6)
 
 def datatime(data: dict):
     pass
