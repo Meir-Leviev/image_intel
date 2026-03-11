@@ -91,7 +91,7 @@ def extract_metadata(image_path):
     # תיקון: טיפול בתמונה בלי EXIF - בלי זה, exif.items() נופל עם AttributeError
     try:
         img = Image.open(image_path)
-        exif = img.getexif()
+        exif = img._getexif()
     except Exception:
         exif = None
 
@@ -112,10 +112,6 @@ def extract_metadata(image_path):
         data[tag] = value
 
     # תיקון: הוסר print(data) שהיה כאן - הדפיס את כל ה-EXIF הגולמי על כל תמונה
-
-    gps_ifd = exif.get_ifd(0x8825)
-    if gps_ifd:
-        data["GPSInfo"] = dict(gps_ifd)
 
     exif_dict = {
         "filename": path.name,
