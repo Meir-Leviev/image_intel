@@ -82,3 +82,6 @@ git commit -m "Add GPS extraction"
 git push origin feature/extractor
 # פתחו PR ב-GitHub
 ```
+
+# TODOLIST
+- [ ] Show the actual image on map view
