@@ -60,7 +60,9 @@ def camera_make(data: dict):
 
 
 def camera_model(data: dict):
-    pass
+    if not data:
+        return None
+    return data.get('Model')
 
 
 def extract_metadata(image_path):
