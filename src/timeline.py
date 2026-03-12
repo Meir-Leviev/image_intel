@@ -5,18 +5,28 @@ def get_day_color(date_str):
     # Generate a background color based on the date string
     colors = [
         "#aed9e0",  # muted blue
-        "#ffb6b9",  # muted pink
-        "#b8e0d2",  # muted green
         "#fae3b0",  # muted yellow
         "#d4c4fb",  # muted purple
         "#a8e6cf",  # muted teal
         "#ffdac1",  # muted peach
-        "#e2f0cb",  # muted lime
+        "#b8e0d2",  # muted green
         "#c3bef0",  # muted periwinkle
         "#ffb7b2"  # muted salmon
     ]
     day_hash = sum(ord(c) for c in date_str)
     return colors[day_hash % len(colors)]
+
+def get_device_icon(make):
+    # Returns a Font Awesome icon class based on the camera make
+    make = str(make).lower()
+    if "apple" in make or "iphone" in make:
+        return '<i class="fa-brands fa-apple"></i>'
+    elif "samsung" in make:
+        return '<i class="fa-brands fa-android"></i>'
+    elif "canon" in make or "nikon" in make or "sony" in make:
+        return '<i class="fa-solid fa-camera"></i>'
+    else:
+        return '<i class="fa-solid fa-device-unknown"></i>'
 
 def create_timeline(images_data):
     # Filter out images that do not have a datetime value
@@ -27,7 +37,8 @@ def create_timeline(images_data):
 
     # Include inline CSS for hover effects and layout
     html = '''
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style> 
         body { font-family: sans-serif; background: #fafafa; }
         .timeline-container { position:relative; padding:20px; max-width: 600px; margin: auto; }
         .center-line { position:absolute; left:50%; width:2px; height:100%; background:#ccc; }
@@ -47,7 +58,8 @@ def create_timeline(images_data):
         }
         .left { float: left; clear: both; text-align: right; margin-right: 10%; }
         .right { float: right; clear: both; text-align: left; margin-left: 10%; }
-        .gap-alert { text-align: center; color: #d9534f; font-weight: bold; font-size: 0.85em; clear: both; margin: 15px 0; background: #fdf5f5; padding: 5px; border-radius: 4px;}
+        .gap-alert { text-align: center; color: #d9534f; font-weight: bold; font-size: 0.85em; clear: both; margin: 15px 0; background: #fdf5f5; padding: 5px; border-radius: 4px ;position: relative;
+    z-index: 1;}
         .hover-details { display: none; font-size: 0.8em; color: #555; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 5px; }
         .timeline-item:hover .hover-details { display: block; }
         .clearfix::after { content: ""; clear: both; display: table; }
@@ -79,17 +91,18 @@ def create_timeline(images_data):
         # Extract location data for the hover details
         lat = img.get("latitude", "N/A")
         lon = img.get("longitude", "N/A")
-        gps_status = 'Yes' if img.get('has_gps') else 'No'
+
+        camera_make = img.get("camera_make", "Unknown")
+        device_icon = get_device_icon(camera_make)
 
         # Append the HTML string for the current image
         html += f'''
         <div class="timeline-item {side_class}" style="background-color: {bg_color};">
-            <strong>{img["datetime"]}</strong><br>
-            {img["filename"]}<br>
-            <small>{img.get("camera_model", "Unknown")}</small>
+            <strong>{img["filename"]}</strong><br>
+            {img["datetime"]}<br>
+            <small>{device_icon} {camera_make} {img.get("camera_model", "Unknown")}</small>
             <div class="hover-details">
-                <strong>Location:</strong> {lat}, {lon}<br>
-                <strong>GPS:</strong> {gps_status}
+                <strong>Location:</strong> {lat}, {lon}
             </div>
         </div>
         '''
