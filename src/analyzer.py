@@ -1,5 +1,36 @@
 from math import radians, cos, sin, asin, sqrt
 from datetime import datetime
+"""
+example output:
+{
+    "total_images": 12,
+    "images_with_gps": 10,
+    "images_with_datetime": 11,
+    "unique_cameras": ["Samsung Galaxy S23", "Apple iPhone 15 Pro", "Canon EOS R5"],
+    "date_range": {"start": "2025-01-12", "end": "2025-01-16"},
+    "insights": [
+        "נמצאו 3 מכשירים שונים - ייתכן שהסוכן החליף מכשירים",
+        "ב-13/01 הסוכן עבר ממכשיר Samsung ל-iPhone",
+        "ריכוז של 3 תמונות באזור תל אביב",
+        "המצלמה המקצועית (Canon) הופיעה רק פעם אחת - בנמל חיפה"
+    ]
+}
+"""
+
+def total_images(img_data: list[dict]) -> int:
+    return len(img_data)
+
+
+def img_with_gps(img_data: list[dict]) -> int:
+    return sum(1 for img in img_data if img["has_gps"])
+
+
+def img_with_datetime(img_data: list[dict]) -> int:
+    return sum(1 for img in img_data if img["datetime"])
+
+
+def unique_cameras(img_data: list[dict]) -> set:
+    return set(f"{img["camera_make"]} {img["camera_model"]}" for img in img_data)
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):
@@ -209,7 +240,6 @@ def test_system():
          'latitude': 29.54,
          'longitude': 34.9415}
     ]
-
     print("--- מריץ ניתוח על נתוני דוגמה ---")
     results = analyze_agent_activity(mock_data)
     for insight in results['insights']:
