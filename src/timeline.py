@@ -38,34 +38,36 @@ def create_timeline(images_data):
     # Include inline CSS for hover effects and layout
     html = '''
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style> 
-        body { font-family: sans-serif; background: #fafafa; }
-        .timeline-container { position:relative; padding:20px; max-width: 600px; margin: auto; }
-        .center-line { position:absolute; left:50%; width:2px; height:100%; background:#ccc; }
-        .timeline-item { 
-            margin: 20px 0; 
-            padding: 15px; 
-            border-radius: 8px; 
-            transition: transform 0.2s, box-shadow 0.2s; 
-            width: 40%;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .timeline-item:hover { 
-            transform: scale(1.05); 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
-            z-index: 10;
-        }
-        .left { float: left; clear: both; text-align: right; margin-right: 10%; }
-        .right { float: right; clear: both; text-align: left; margin-left: 10%; }
-        .gap-alert { text-align: center; color: #d9534f; font-weight: bold; font-size: 0.85em; clear: both; margin: 15px 0; background: #fdf5f5; padding: 5px; border-radius: 4px ;position: relative;
-    z-index: 1;}
-        .hover-details { display: none; font-size: 0.8em; color: #555; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 5px; }
-        .timeline-item:hover .hover-details { display: block; }
-        .clearfix::after { content: ""; clear: both; display: table; }
-    </style>
-    <div class="timeline-container clearfix">
-        <div class="center-line"></div>
+<style> 
+    body { font-family: sans-serif; background: #fafafa; }
+    .timeline-container { position:relative; padding:20px; max-width: 600px; margin: auto; }
+    .timeline-title { text-align: center; }
+    .center-line { position:absolute; left:50%; width:2px; height:100%; background:#ccc; }
+    .timeline-item { 
+        margin: 20px 0; 
+        padding: 15px; 
+        border-radius: 8px; 
+        transition: transform 0.2s, box-shadow 0.2s; 
+        width: 40%;
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .timeline-item:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+        z-index: 10;
+    }
+    .left { float: left; clear: both; text-align: right; margin-right: 10%; }
+    .right { float: right; clear: both; text-align: left; margin-left: 10%; }
+    .gap-alert { text-align: center; color: #d9534f; font-weight: bold; font-size: 0.85em; clear: both; margin: 15px 0; background: #fdf5f5; padding: 5px; border-radius: 4px ;position: relative;
+z-index: 1;}
+    .hover-details { display: none; font-size: 0.8em; color: #555; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 5px; }
+    .timeline-item:hover .hover-details { display: block; }
+    .clearfix::after { content: ""; clear: both; display: table; }
+</style>
+<div class="timeline-container clearfix">
+    <h1 class="timeline-title">IMAGES TIMELINE</h1>
+    <div class="center-line"></div>
     '''
 
     prev_dt = None
