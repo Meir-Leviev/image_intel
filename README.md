@@ -86,4 +86,4 @@ git push origin feature/extractor
 # TODOLIST
 - [ ] Show the actual image on map view
 - [ ] לא להתחיל למיין למפה לפני שאישרנו שיש GPS
-- [ ] 
+- [ ] להוסיף מה שחסר ב analyzer

@@ -72,46 +72,39 @@ def camera_switches_as_str(switches: list[dict]) -> str:
 
 def get_city_from_coords(lat, lon):
     # Initialize Nominatim API
-    geolocator = Nominatim(user_agent="my_app_for_university_project_123")
+    geolocator = Nominatim(user_agent="my_app")
 
-    try:
-        # Get location details
-        location = geolocator.reverse((lat, lon),language="en" ,exactly_one=True)
+    # Get location details
+    location = geolocator.reverse(f"{lat}, {lon}", language="en")
 
-        if location and 'address' in location.raw:
-            address = location.raw['address']
-            # Extract city, town, or village
-            city = address.get('city', address.get('town', address.get('village', 'Unknown')))
-            return city
+    if location:
+        address = location.raw.get("address", {})
+        return address.get("city") or address.get("town") or address.get("village")
 
-        return "Unknown Area"
-
-    except Exception as e:
-        print(f"Error fetching location: {e}")
-        return "Error in get_city_from_coords"
+    return "Unknown Area"
 
 
 def check_if_close(coord1, coord2, max_distance_km):
     # Calculate distance between two coordinates in kilometers
-    distance = geodesic(coord1, coord2).kilometers
+    distance = geodesic(coord1, coord2).km
     return distance <= max_distance_km
 
 
 def find_geo_clusters(images_data, max_distance=1):
     sorted_data = sorted(images_data, key=lambda x: (x["latitude"], x["longitude"]))
     out_dict = {}
-    for i, img in enumerate(sorted_data, 1):
-        next_lat = img["latitude"]
-        next_lon = img["longitude"]
-        last_lat = sorted_data[i - 1]["latitude"]
-        last_lon = sorted_data[i - 1]["longitude"]
-        if check_if_close((last_lat, last_lon), (next_lat , next_lon),max_distance):
-            city = get_city_from_coords(last_lat,last_lon)
-            out_dict[city] = out_dict.get(city,0) + 1
+    for i in range(1, len(sorted_data)):
+        curr_img = sorted_data[i]
+        prev_img = sorted_data[i - 1]
+
+        coord1 = (prev_img["latitude"], prev_img["longitude"])
+        coord2 = (curr_img["latitude"], curr_img["longitude"])
+
+        if check_if_close(coord1, coord2, max_distance):
+            # If they are close, get the city and increment
+            city = get_city_from_coords(coord1[0], coord1[1])
+            out_dict[city] = out_dict.get(city, 1) + 1
     return out_dict
-
-
-
 
 
 def detect_location_returns(sorted_images, threshold_km=1.0, min_gap_hours=2):
@@ -169,8 +162,6 @@ def analyze_agent_activity(images_data):
         insights.append(f"A cluster of {v} photos in the {k} area")
 
 
-    for r in returns:
-        insights.append(f"חזרה למיקום ב-{r['date']} (ביקור קודם: {r['original_date']})")
 
     return {
     "total_images": images,
@@ -270,7 +261,6 @@ def test_system():
          'latitude': 29.54,
          'longitude': 34.9415}
     ]
-    print("--- מריץ ניתוח על נתוני דוגמה ---")
     results = analyze_agent_activity(mock_data)
     for insight in results['insights']:
         print(f"• {insight}")
