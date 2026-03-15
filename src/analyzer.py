@@ -16,6 +16,13 @@ example output:
     ]
 }
 """
+def date_range(img_data: list[dict]) -> dict:
+    start = min(img_data, key=lambda d: d["datetime"])
+    start_date = start["datetime"].split()
+    end = max(img_data, key=lambda d: d["datetime"])
+    end_date = end["datetime"].split()
+    return {"start": start_date[0], "end": end_date[0]}
+
 
 def total_images(img_data: list[dict]) -> int:
     return len(img_data)
