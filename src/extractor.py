@@ -59,8 +59,10 @@ def longitude(data: dict):
     return round(decimal, 6)
 
 def datatime(data: dict):
-
-    return data.get("DateTimeOriginal") or data.get("DateTime")
+    date_time = data.get("DateTimeOriginal") or data.get("DateTime")
+    date , time = date_time.split()
+    edit_date = date.replace(":","-")
+    return f"{edit_date} {time}"
 
 
 def camera_make(data: dict):
