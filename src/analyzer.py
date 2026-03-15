@@ -1,5 +1,7 @@
 from math import radians, cos, sin, asin, sqrt
 from datetime import datetime
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 """
 example output:
 {
@@ -68,35 +70,48 @@ def camera_switches_as_str(switches: list[dict]) -> str:
     return switches_str
 
 
-def find_geo_clusters(images_data, threshold_km=1.0):
-    clusters = []
-    # התאמה למפתחות latitude ו-longitude
-    geo_images = [img for img in images_data if "latitude" in img and "longitude" in img and img["has_gps"]]
-    for i in range(len(geo_images)):
-        for j in range(i + 1, len(geo_images)):
-            dist = calculate_distance(geo_images[i]["latitude"], geo_images[i]["longitude"],
-                                      geo_images[j]["latitude"], geo_images[j]["longitude"])
-            if dist <= threshold_km:
-                clusters.append({
-                    "ids": [geo_images[i].get("filename"), geo_images[j].get("filename")],
-                    "distance_km": round(dist, 2)
-                })
-    return clusters
+def get_city_from_coords(lat, lon):
+    # Initialize Nominatim API
+    geolocator = Nominatim(user_agent="my_app_for_university_project_123")
+
+    try:
+        # Get location details
+        location = geolocator.reverse((lat, lon),language="en" ,exactly_one=True)
+
+        if location and 'address' in location.raw:
+            address = location.raw['address']
+            # Extract city, town, or village
+            city = address.get('city', address.get('town', address.get('village', 'Unknown')))
+            return city
+
+        return "Unknown Area"
+
+    except Exception as e:
+        print(f"Error fetching location: {e}")
+        return "Error in get_city_from_coords"
 
 
-def detect_time_gaps(sorted_images, gap_hours=12):
-    gaps = []
-    fmt = "%Y-%m-%d %H:%M:%S"
-    for i in range(1, len(sorted_images)):
-        t1 = datetime.strptime(sorted_images[i - 1]["datetime"], fmt)
-        t2 = datetime.strptime(sorted_images[i]["datetime"], fmt)
-        diff = (t2 - t1).total_seconds() / 3600
-        if diff >= gap_hours:
-            gaps.append({
-                "at_date": sorted_images[i - 1]["datetime"],
-                "gap_duration": round(diff, 1)
-            })
-    return gaps
+def check_if_close(coord1, coord2, max_distance_km):
+    # Calculate distance between two coordinates in kilometers
+    distance = geodesic(coord1, coord2).kilometers
+    return distance <= max_distance_km
+
+
+def find_geo_clusters(images_data, max_distance=1):
+    sorted_data = sorted(images_data, key=lambda x: (x["latitude"], x["longitude"]))
+    out_dict = {}
+    for i, img in enumerate(sorted_data, 1):
+        next_lat = img["latitude"]
+        next_lon = img["longitude"]
+        last_lat = sorted_data[i - 1]["latitude"]
+        last_lon = sorted_data[i - 1]["longitude"]
+        if check_if_close((last_lat, last_lon), (next_lat , next_lon),max_distance):
+            city = get_city_from_coords(last_lat,last_lon)
+            out_dict[city] = out_dict.get(city,0) + 1
+    return out_dict
+
+
+
 
 
 def detect_location_returns(sorted_images, threshold_km=1.0, min_gap_hours=2):
@@ -125,7 +140,10 @@ def detect_location_returns(sorted_images, threshold_km=1.0, min_gap_hours=2):
     return returns
 
 
+
+
 def analyze_agent_activity(images_data):
+    print("--- Analyzing Images Data ---")
     sorted_images = sorted(
         [img for img in images_data if img.get("datetime")],
         key=lambda x: x["datetime"]
@@ -142,16 +160,15 @@ def analyze_agent_activity(images_data):
 
     switches = detect_camera_switches(sorted_images)
     switches_insights = camera_switches_as_str(switches)
-    gaps = detect_time_gaps(sorted_images)
-    clusters = find_geo_clusters(sorted_images)
+    clusters = find_geo_clusters(images_data)
     returns = detect_location_returns(sorted_images)
 
     insights = [f"Found {len(cameras)} different devices - the agent may have switched devices", f"{switches_insights}"]
 
-    for g in gaps:
-        insights.append(f"פער זמן של {g['gap_duration']} שעות ב-{g['at_date']}")
-    if clusters:
-        insights.append(f"נמצאו {len(clusters)} ריכוזים גיאוגרפיים")
+    for k, v in clusters.items():
+        insights.append(f"A cluster of {v} photos in the {k} area")
+
+
     for r in returns:
         insights.append(f"חזרה למיקום ב-{r['date']} (ביקור קודם: {r['original_date']})")
 
