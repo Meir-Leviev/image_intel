@@ -61,10 +61,17 @@ def detect_camera_switches(sorted_images):
     return switches
 
 
+def camera_switches_as_str(switches: list[dict]) -> str:
+    switches_str = ''
+    for s in switches:
+        switches_str += f"On {s["date"]} the agent switched from {s["from"]} to {s["to"]}\n"
+    return switches_str
+
+
 def find_geo_clusters(images_data, threshold_km=1.0):
     clusters = []
     # התאמה למפתחות latitude ו-longitude
-    geo_images = [img for img in images_data if "latitude" in img and "longitude" in img]
+    geo_images = [img for img in images_data if "latitude" in img and "longitude" in img and img["has_gps"]]
     for i in range(len(geo_images)):
         for j in range(i + 1, len(geo_images)):
             dist = calculate_distance(geo_images[i]["latitude"], geo_images[i]["longitude"],
@@ -127,17 +134,20 @@ def analyze_agent_activity(images_data):
     if not sorted_images:
         return {"error": "No valid data"}
 
+    images = total_images(sorted_images)
+    gps = img_with_gps(sorted_images)
+    datetime_imgs = img_with_datetime(sorted_images)
+    cameras = list(unique_cameras(sorted_images))
+    date_rang = date_range(sorted_images)
+
     switches = detect_camera_switches(sorted_images)
+    switches_insights = camera_switches_as_str(switches)
     gaps = detect_time_gaps(sorted_images)
     clusters = find_geo_clusters(sorted_images)
     returns = detect_location_returns(sorted_images)
 
-    insights = []
-    unique_cams = list(set(img.get("camera_model") for img in sorted_images if img.get("camera_model")))
-    insights.append(f"מכשירים: {', '.join(unique_cams)}")
+    insights = [f"Found {len(cameras)} different devices - the agent may have switched devices", f"{switches_insights}"]
 
-    for s in switches:
-        insights.append(f"החלפת מכשיר ב-{s['date']}: {s['from']} -> {s['to']}")
     for g in gaps:
         insights.append(f"פער זמן של {g['gap_duration']} שעות ב-{g['at_date']}")
     if clusters:
@@ -146,18 +156,14 @@ def analyze_agent_activity(images_data):
         insights.append(f"חזרה למיקום ב-{r['date']} (ביקור קודם: {r['original_date']})")
 
     return {
-        "metadata": {
-            "total": len(sorted_images),
-            "range": f"{sorted_images[0]['datetime']} - {sorted_images[-1]['datetime']}"
-        },
-        "insights": insights,
-        "raw": {
-            "switches": switches,
-            "gaps": gaps,
-            "clusters": clusters,
-            "returns": returns
-        }
-    }
+    "total_images": images,
+    "images_with_gps": gps,
+    "images_with_datetime": datetime_imgs,
+    "unique_cameras": cameras,
+    "date_range": date_rang,
+    "insights": insights
+
+}
 
 
 def test_system():
