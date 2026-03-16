@@ -40,14 +40,14 @@ def analyze_images():
         timeline_html = create_timeline(images_data)
 
         # שלב 4: ניתוח
-        from analyzer import analyze
-        analysis = analyze(images_data)
+        from analyzer import analyze_agent_activity
+        analysis = analyze_agent_activity(images_data)
 
-        # # שלב 5: הרכבת דו"ח
-        # from report import create_report
-        # report_html = create_report(images_data, map_html, timeline_html, analysis)
+        # שלב 5: הרכבת דו"ח
+        from analyzer import create_report
+        report_html = create_report(images_data, map_html, timeline_html, analysis)
 
-        return timeline_html
+        return report_html
 
 
 if __name__ == "__main__":

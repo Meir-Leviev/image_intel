@@ -81,7 +81,10 @@ def check_if_close(coord1, coord2, max_distance_km):
 
 
 def find_geo_clusters(images_data, max_distance=1):
-    sorted_data = sorted(images_data, key=lambda x: (x["latitude"], x["longitude"]))
+    geo_data = [x for x in images_data if x.get("latitude") is not None and x.get("longitude") is not None]
+
+    sorted_data = sorted(geo_data, key=lambda x: (x["latitude"], x["longitude"]))
+
     out_dict = {}
 
     for i in range(1, len(sorted_data)):
@@ -133,7 +136,7 @@ def detect_location_returns(sorted_images, threshold_km=1.0, min_gap_hours=2):
     return returns
 
 
-def analyze(images_data):
+def analyze_agent_activity(images_data):
     sorted_images = sorted(
         [img for img in images_data if img.get("datetime")],
         key=lambda x: x["datetime"]
