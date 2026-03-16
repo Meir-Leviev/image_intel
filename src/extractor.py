@@ -2,6 +2,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from pathlib import Path
 import os
+import base64
 
 """
 extractor.py - שליפת EXIF מתמונות
@@ -11,6 +12,24 @@ extractor.py - שליפת EXIF מתמונות
 
 """
 
+
+def get_base64_image(image_path):
+    """
+
+    ממיר את התמונה מהמחשב לתוכנה שנוכל להציג אותה
+
+    """
+    # Check if file exists to avoid errors
+    if not os.path.exists(image_path):
+        return ""
+
+    try:
+        with open(image_path, "rb") as image_file:
+            # Convert image to base64 string
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            return f"data:image/jpeg;base64,{encoded_string}"
+    except Exception:
+        return ""
 
 def has_gps(data: dict):
     return "GPSInfo" in data
@@ -100,6 +119,7 @@ def extract_metadata(image_path):
     if exif is None:
         return {
             "filename": path.name,
+            "path" : path,
             "datetime": None,
             "latitude": None,
             "longitude": None,
@@ -116,7 +136,9 @@ def extract_metadata(image_path):
     # תיקון: הוסר print(data) שהיה כאן - הדפיס את כל ה-EXIF הגולמי על כל תמונה
 
     exif_dict = {
+        "image_base64": get_base64_image(path),
         "filename": path.name,
+        "path": path,
         "datetime": datatime(data),
         "latitude": latitude(data),
         "longitude": longitude(data),
