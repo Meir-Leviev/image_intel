@@ -44,7 +44,7 @@ def analyze_images():
         analysis = analyze_agent_activity(images_data)
 
         # שלב 5: הרכבת דו"ח
-        from analyzer import create_report
+        from report import create_report
         report_html = create_report(images_data, map_html, timeline_html, analysis)
 
         return report_html
