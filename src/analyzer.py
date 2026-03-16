@@ -59,8 +59,7 @@ def camera_switches_as_str(switches: list[dict]) -> str:
     switches_str = ''
 
     for s in switches:
-        switches_str += f"On {s['date']} the agent switched from {s['from']} to {s['to']}\n"
-
+        switches_str += f"On {s["date"]} the agent switched from {s["from"]} to {s["to"]}<br>"
     return switches_str
 
 
