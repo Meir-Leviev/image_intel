@@ -17,7 +17,7 @@ import folium
 
 
 def sort_by_time(arr):
-    return sorted(arr, key=lambda x: x.get("datetime", ""))
+    return sorted((x for x in arr if x.get("datetime") is not None),key=lambda x: x["datetime"])
 
 def get_color_marker(data: list[dict]) -> dict:
     """
