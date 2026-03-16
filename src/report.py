@@ -1,5 +1,6 @@
+import os
 from datetime import datetime
-from extractor import extract_all
+from extractor import extract_all, get_base64_image
 from map_view import create_map
 from timeline import create_timeline
 from analyzer import analyze_agent_activity
@@ -11,6 +12,9 @@ from analyzer import analyze_agent_activity
 
 
 def create_report(images_data, map_html, timeline_html, analysis):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(base_dir,"icon.jpeg")
+    ico = get_base64_image(full_path)
     now = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     insights_html = ""
@@ -269,7 +273,9 @@ def create_report(images_data, map_html, timeline_html, analysis):
 
         <div class="footer">
             Image Intel | Team #2<br>
-            Yosef Chen | Meir Leviev | Ushi Philip | [The 4th member] 
+            Yosef Chen | Meir Leviev | Ushi Philip | [The 4th member]<br>
+            <h2><b>THANKS TO OUR GREAT TEACHER RONEN SHLIT"A</b></h2>
+            <img src="{ico}" alt="Icon" style="width: 577.5px; height: auto; vertical-align: middle; margin-bottom: 150px;"><br>
         </div>
     </body>
     </html>
