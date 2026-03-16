@@ -1,4 +1,9 @@
 from datetime import datetime
+from extractor import extract_all
+from map_view import create_map
+from timeline import create_timeline
+from analyzer import analyze_agent_activity
+
 
 """"זה הדוגמה מהמדריך לקבוצה 3
 מומלץ לשנות לאנגלית
@@ -83,3 +88,14 @@ def create_report(images_data, map_html, timeline_html, analysis):
     </html>
     """
     return html
+
+
+if __name__ == "__main__":
+    data =  extract_all("/Users/meirleviev/Desktop/PyCharm/image_intel/images/ready")
+    map_html = create_map(data)
+    timeline = create_timeline(data)
+    analysis = analyze_agent_activity(data)
+
+    report = create_report(data, map_html, timeline, analysis)
+    with open("test_report.html", "w") as h:
+        h.write(report)
