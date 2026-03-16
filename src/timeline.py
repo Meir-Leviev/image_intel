@@ -66,7 +66,6 @@ z-index: 1;}
     .clearfix::after { content: ""; clear: both; display: table; }
 </style>
 <div class="timeline-container clearfix">
-    <h1 class="timeline-title">IMAGES TIMELINE</h1>
     <div class="center-line"></div>
     '''
 

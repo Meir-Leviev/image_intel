@@ -268,7 +268,8 @@ def create_report(images_data, map_html, timeline_html, analysis):
         </div>
 
         <div class="footer">
-            Image Intel | Hackathon 2026
+            Image Intel | Team #2<br>
+            Yosef Chen | Meir Leviev | Ushi Philip | [The 4th member] 
         </div>
     </body>
     </html>
