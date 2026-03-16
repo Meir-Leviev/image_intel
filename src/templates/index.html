@@ -1,80 +1,97 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <!-- תיקון: היה initial-width=1.0 במקום initial-scale=1.0 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Intel - מודיעין חזותי</title>
+    <title>Image Intel</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --container-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --accent-hover: #0284c7;
-            --border-color: #475569;
+            --text-main: #1d1d1f;
+            --text-secondary: #86868b;
+            --bg-main: #fbfbfd;
+            --bg-card: #ffffff;
+
+            /* Group colors from the report */
+            --color-group1: #f3c2bc;
+            --color-group4: #d6caed;
+            --color-group5: #badfc9;
+            --button-primary: #6a4c93; /* Same dark purple used for badges */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            letter-spacing: -.022em;
         }
 
         .container {
-            background-color: var(--container-bg);
-            padding: 50px;
-            border-radius: 16px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            background-color: var(--bg-card);
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04);
             width: 100%;
-            max-width: 550px;
+            max-width: 600px;
             text-align: center;
         }
 
-        h1 {
-            color: var(--accent-color);
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            margin-top: 0;
-            letter-spacing: 2px;
+        /* Matches the gradient header from the report */
+        .header {
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--color-group1) 0%, var(--color-group5) 100%);
+            border-radius: 14px;
+            margin-bottom: 30px;
+            color: #fff;
         }
 
-        p {
-            color: #94a3b8;
-            font-size: 1.1em;
-            margin-bottom: 40px;
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.005em;
+            margin: 0 0 8px 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 18px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
         }
 
         .file-drop-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 50px 20px;
+            border: 2px dashed var(--text-secondary);
+            border-radius: 14px;
+            padding: 60px 20px;
             margin-bottom: 25px;
             transition: all 0.3s ease;
-            background-color: rgba(255, 255, 255, 0.02);
+            background-color: rgba(0, 0, 0, 0.01);
             cursor: pointer;
         }
 
         .file-drop-area:hover, .file-drop-area.dragover {
-            border-color: var(--accent-color);
-            background-color: rgba(56, 189, 248, 0.08);
+            border-color: var(--button-primary);
+            background-color: rgba(106, 76, 147, 0.05); /* Light purple tint */
         }
 
         .file-msg {
             font-size: 1.2em;
-            color: #cbd5e1;
+            font-weight: 600;
+            color: var(--text-main);
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .file-msg-sub {
-            font-size: 0.9em;
-            color: #64748b;
+            font-size: 0.95em;
+            color: var(--text-secondary);
         }
 
         input[type="file"] {
@@ -82,40 +99,41 @@
         }
 
         .submit-btn {
-            background-color: var(--accent-color);
-            color: #0f172a;
+            background-color: var(--button-primary);
+            color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 24px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .submit-btn:hover {
-            background-color: var(--accent-hover);
-            color: white;
-            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+            background-color: #553c77;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Image Intel</h1>
-        <p>מערכת סריקה וניתוח נתוני EXIF</p>
+        <div class="header">
+            <h1>Image Intel</h1>
+            <p>EXIF Data Scanning and Analysis</p>
+        </div>
 
         <form action="/analyze" method="POST" enctype="multipart/form-data">
             <div class="file-drop-area" id="drop-area">
-                <span class="file-msg" id="file-msg">לחץ כאן או גרור תמונות לכאן</span>
-                <span class="file-msg-sub" id="file-msg-sub">אפשר לבחור כמה תמונות יחד</span>
+                <span class="file-msg" id="file-msg">Click here or drag images here</span>
+                <span class="file-msg-sub" id="file-msg-sub">You can select multiple images at once</span>
                 <input type="file" name="photos" id="file-input" multiple accept="image/*">
             </div>
 
-            <button type="submit" class="submit-btn">התחל ניתוח מודיעיני</button>
+            <button type="submit" class="submit-btn">Start Intel Analysis</button>
         </form>
     </div>
 
@@ -141,6 +159,7 @@
     ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false);
     });
+
     ['dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false);
     });
@@ -151,6 +170,7 @@
             filesMap.set(file.name, file);
         }
 
+        // Create a new DataTransfer object to hold the updated files
         const dt = new DataTransfer();
         filesMap.forEach((file) => {
             dt.items.add(file);
@@ -174,13 +194,13 @@
     function updateFileName() {
         const totalFiles = fileInput.files.length;
         if (totalFiles > 0) {
-            fileMsg.textContent = "נצברו " + totalFiles + " תמונות";
-            fileMsg.style.color = "var(--accent-color)";
-            fileMsgSub.textContent = "אפשר להמשיך להוסיף, תמונות זהות הוחלפו אוטומטית";
+            fileMsg.textContent = totalFiles + " images accumulated";
+            fileMsg.style.color = "var(--button-primary)";
+            fileMsgSub.textContent = "You can keep adding, duplicate images were replaced automatically";
         } else {
-            fileMsg.textContent = "לחץ כאן או גרור תמונות לכאן";
-            fileMsg.style.color = "#cbd5e1";
-            fileMsgSub.textContent = "אפשר לבחור כמה תמונות יחד";
+            fileMsg.textContent = "Click here or drag images here";
+            fileMsg.style.color = "var(--text-main)";
+            fileMsgSub.textContent = "You can select multiple images at once";
         }
     }
     </script>

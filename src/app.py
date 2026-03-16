@@ -16,7 +16,7 @@ def analyze_images():
 
     uploaded_files = request.files.getlist("photos")
     if not uploaded_files:
-        return "לא נבחרו קבצים", 400
+        return "No files selected", 400
 
     # שמירה זמנית של הקבצים בספרייה זמנית
     import tempfile
