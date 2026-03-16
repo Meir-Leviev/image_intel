@@ -69,6 +69,7 @@ def create_map(images_data):
             html_content = f"""
                         <div style="font-family: Arial, sans-serif; font-size: 14px; min-width: 200px;">
                             <h4 style="margin-top: 0;">&#128247; {d.get("filename")}</h4>
+                            <img src="{d["image_base64"]}" style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
                             <b>Photo #:</b> {i + 1}<br>
                             <b>Time:</b> {d.get("datetime")}<br>
                             <b>Device:</b> {d.get("camera_make")} {d.get("camera_model")}<br>

@@ -95,10 +95,10 @@ z-index: 1;}
 
         camera_make = img.get("camera_make", "Unknown")
         device_icon = get_device_icon(camera_make)
-
         # Append the HTML string for the current image
         html += f'''
         <div class="timeline-item {side_class}" style="background-color: {bg_color};">
+            <img src="{img["image_base64"]}" alt="{img["filename"]}" style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
             <strong>{img["filename"]}</strong><br>
             {img["datetime"]}<br>
             <small>{device_icon} {camera_make} {img.get("camera_model", "Unknown")}</small>
